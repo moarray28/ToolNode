@@ -6,8 +6,7 @@ import Login from './pages/Login';
 import Profile from './pages/Profile';
 import Register from './pages/Register';
 import Feed from './pages/Feed';  
-import { useState } from 'react';
-import { useEffect } from 'react';  
+  
 import Home from './pages/Home';
 import MainLayout from './components/MainLayout';
 
@@ -17,7 +16,7 @@ function App() {
     <>
      
 
-      <div class=" bg-purple-800">
+      
   
         
 
@@ -33,7 +32,7 @@ function App() {
   </Routes>
 </Router>
 
-</div>
+ 
 
     
     </>
