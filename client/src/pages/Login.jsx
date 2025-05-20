@@ -1,19 +1,47 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-
+import axios from 'axios'
 
 function Login() {
 
-  const [username, setUsername] = React.useState('')
+  const [email, setEmail] = React.useState('')
   const [password, setPassword] = React.useState('')
   const [loading, setLoading] = React.useState(false)
   const [message, setMessage] = React.useState('')
   const [error, setError] = React.useState('')
   const [user, setUser] = React.useState(null)
+
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
   
   const handleSignIn = async (e) => {
-    console.log("data entered");
-  }
+      e.preventDefault();
+    
+      setLoading(true);
+      setMessage('');
+      setError('');
+    
+      try {
+        const response = await axios.post(`${backendUrl}/login`, {
+          email,
+          password,
+        });
+    
+        setMessage(response.data.message || 'Login successful!');
+        // Optionally, you can also handle tokens or redirect here:
+        // localStorage.setItem('token', response.data.token);
+        // navigate('/dashboard');
+      } catch (err) {
+        if (err.response && err.response.data && err.response.data.message) {
+          setError(err.response.data.message);
+        } else {
+          setError('Something went wrong. Please try again.');
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+
 
   return (
     <>
@@ -26,15 +54,15 @@ function Login() {
     
     <form onSubmit={handleSignIn}>
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700">Username</label>
+        <label className="block text-sm font-medium text-gray-700">Email</label>
         <input
           type="text"
           className="mt-1 w-full px-4 py-2 rounded-lg border-none 
                      bg-secondary text-gray-700 placeholder:text-slate-400 
                      shadow-inner focus:ring-2 focus:ring-primary outline-none"
-          placeholder="Enter username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          placeholder="Enter email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
       </div>
 

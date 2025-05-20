@@ -1,10 +1,11 @@
 import React from 'react'
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 function Register() {
 
-  const [fullName, setFullName] = useState('')
+ 
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -13,9 +14,45 @@ function Register() {
 
   const [error, setError] = useState('')
 
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-  const handleRegister = async (e) => {console.log("data entered")}
-  return (
+
+  
+
+ 
+ 
+
+const handleRegister = async (e) => {
+  e.preventDefault();
+
+  setLoading(true);
+  setMessage('');
+  setError('');
+
+  try {
+    const response = await axios.post(`${backendUrl}/register`, {
+      username,
+      email,
+      password,
+    });
+
+    setMessage(response.data.message || 'Registration successful!');
+  } catch (err) {
+    // You can customize error message display based on error response
+    if (err.response && err.response.data && err.response.data.message) {
+      setError(err.response.data.message);
+    } else {
+      setError('Something went wrong. Please try again.');
+    }
+  } finally {
+    setLoading(false);
+  }
+
+
+  
+};
+
+return (
     <>
       register pag
 
@@ -27,18 +64,7 @@ function Register() {
     <h2 className="text-2xl font-bold mb-6 text-center text-primary">Register</h2>
 
     <form onSubmit={handleRegister}>
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-accent">Full Name</label>
-        <input
-          type="text"
-          className="mt-1 w-full px-4 py-2 rounded-lg border-none 
-                     bg-secondary text-accent placeholder:text-accent/50 
-                     shadow-inner focus:outline-none focus:ring-2 focus:ring-primary"
-          placeholder="Enter full name"
-          value={fullName}
-          onChange={(e) => setFullName(e.target.value)}
-        />
-      </div>
+       
 
       <div className="mb-4">
         <label className="block text-sm font-medium text-accent">Username</label>
