@@ -20,31 +20,34 @@ function Login() {
 
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
   const handleSignIn = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    setLoading(true);
-    setMessage("");
-    setError("");
+  setLoading(true);
+  setMessage("");
+  setError("");
 
-    try {
-      const response = await axios.post(`${backendUrl}/login`, {
-        email,
-        password,
-      });
+  try {
+    const response = await axios.post(`${backendUrl}/login`, {
+      email,
+      password,
+    });
 
-      setMessage(response.data.message || "Login successful!");
-      login(response.data.token); // Save token to context + localStorage
-      navigate("/profile"); // ✅ Redirect after login
-    } catch (err) {
-      if (err.response && err.response.data && err.response.data.message) {
-        setError(err.response.data.message);
-      } else {
-        setError("Something went wrong. Please try again.");
-      }
-    } finally {
-      setLoading(false);
+    const { token, user } = response.data;
+
+    setMessage(response.data.message || "Login successful!");
+    login(token, user); // ✅ Save both token and user to context/localStorage
+    navigate("/profile"); // ✅ Redirect after login
+  } catch (err) {
+    if (err.response && err.response.data && err.response.data.message) {
+      setError(err.response.data.message);
+    } else {
+      setError("Something went wrong. Please try again.");
     }
-  };
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <>

@@ -26,9 +26,7 @@ function Register() {
   
 
  
- 
-
-const handleRegister = async (e) => {
+ const handleRegister = async (e) => {
   e.preventDefault();
 
   setLoading(true);
@@ -43,15 +41,16 @@ const handleRegister = async (e) => {
     });
 
     setMessage(response.data.message || 'Registration successful!');
-    if (response.data.token) {
-    login(response.data.token);        // Store token and update auth state
-    navigate('/profile');                 // Redirect to protected route
-  } else {
-    navigate('/login');                // If no token, ask user to login manually
-  }
+
+    if (response.data.token && response.data.user) {
+      // Pass both token and user object to login()
+      login(response.data.token, response.data.user);
+      navigate('/profile'); // Redirect to profile
+    } else {
+      navigate('/login'); // If no token/user, fallback to login page
+    }
 
   } catch (err) {
-    // You can customize error message display based on error response
     if (err.response && err.response.data && err.response.data.message) {
       setError(err.response.data.message);
     } else {
@@ -60,9 +59,6 @@ const handleRegister = async (e) => {
   } finally {
     setLoading(false);
   }
-
-
-  
 };
 
 return (

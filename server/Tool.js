@@ -11,14 +11,16 @@ const rentalRequestSchema = new mongoose.Schema({
       default: 'pending'
     }
   });
-
+  
 const toolSchema = new mongoose.Schema({
-  owner:       { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true },
-  title:       { type: String, required: true },
-  category:    { type: String },
-  rentPerDay:  { type: Number, required: true },
-  image:       { type: String }, // Single image URL
-  rentalRequests: [rentalRequestSchema] // Embedded rental requests
+  owner:          { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true },
+  title:          { type: String, required: true },
+  category:       { type: String },
+  image:          { type: String },
+  durationInHours:{ type: Number, required: true },     // 1 to 96
+  ratePerHour:    { type: Number, required: true },     // 1 to 200
+  rentalRequests: [rentalRequestSchema]
 }, { timestamps: true });
+
 
 module.exports = mongoose.model('Tool', toolSchema);
