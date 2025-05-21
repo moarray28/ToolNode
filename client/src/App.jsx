@@ -9,7 +9,7 @@ import Feed from './pages/Feed';
   
 import Home from './pages/Home';
 import MainLayout from './components/MainLayout';
-
+import ProtectedRoute from './components/ProtectedRoute';
 function App() {
   
   return (
@@ -22,9 +22,16 @@ function App() {
 
 <Router>
   <Routes>
-  <Route path="/" element={<MainLayout />}>
+  < Route path="/" element={<MainLayout />}>
     <Route path="/" element={<Home/>} />
-    <Route path="/profile" element={<Profile/>} />
+
+<Route path="/profile" element={
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        }
+      />
+
     <Route path="/login" element={<Login />} />
     <Route path="/feed" element={<Feed/>} />
     <Route path="/register" element={<Register/>} />
