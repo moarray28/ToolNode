@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 const TransactionHistory = () => {
   const [transactions, setTransactions] = useState({ givenForRent: [], rented: [] });
@@ -10,7 +11,7 @@ const TransactionHistory = () => {
     const fetchTransactions = async () => {
       const token = localStorage.getItem('authToken');
       try {
-        const res = await axios.get('http://localhost:5000/transactions', {
+        const res = await axios.get(`${backendUrl}/transactions`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
