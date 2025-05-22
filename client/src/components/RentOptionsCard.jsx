@@ -35,23 +35,20 @@ const RentOptionsCard = () => {
       {/* Dynamic Content */}
       <div className="transition-all duration-500">
         {selectedOption === 'transaction' && (
-          <div className="bg-zinc-800 p-4 rounded-xl shadow-inner">
-            <h3 className="text-xl font-bold mb-2">🔍 Browse & Rent Tools</h3>
-            <div className="text-zinc-300">
-              Explore tools by category, filter by location and availability, and request items for temporary use.
-
+          <div className=" p-4 rounded-xl ">
+            
               <TransactionHistory/>
            
-            </div>
+            
           </div>
         )}
 
         {selectedOption === 'give' && (
-          <div className="bg-zinc-800 p-4 rounded-xl shadow-inner">
-            <h3 className="text-xl font-bold mb-2">📤 List Your Tool for Rent</h3>
-            <div className="text-zinc-300">
+          <div className=" p-4 rounded-xl ">
+             
+          
                 <ToolForm/>
-            </div>
+            
           </div>
         )}
       </div>

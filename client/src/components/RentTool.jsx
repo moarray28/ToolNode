@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
 const RentTool = () => {
   const { id } = useParams();
   const [tool, setTool] = useState(null);
@@ -40,37 +41,46 @@ const RentTool = () => {
     }
   };
 
-  if (!tool) return <p className="text-white p-4">Loading...</p>;
+  if (!tool) return <p className="text-center text-gray-500 p-4">Loading...</p>;
 
   const owner = tool.owner || {};
 
   return (
-    <div className="p-6 text-white max-w-xl mx-auto">
-      <div className="rounded-lg shadow-md bg-zinc-800 p-6">
-        <h2 className="text-2xl font-bold mb-2">{tool.title}</h2>
-        <p className="mb-1"><strong>Category:</strong> {tool.category}</p>
-        <p className="mb-1"><strong>Rate:</strong> ₹{tool.ratePerHour}/hr</p>
-        <p className="mb-4"><strong>Available for:</strong> {tool.durationInHours} hours</p>
+    <div className="p-6  min-h-screen flex justify-center items-start">
+      <div className="w-full max-w-xl rounded-xl bg-white p-6 shadow-lg space-y-4">
+        <h2 className="text-2xl font-bold text-primary mb-4">{tool.title}</h2>
+        
+        <div className="space-y-2 text-gray-700">
+          <p><strong>Category:</strong> {tool.category}</p>
+          <p><strong>Rate:</strong> ₹{tool.ratePerHour}/hr</p>
+          <p><strong>Available for:</strong> {tool.durationInHours} hours</p>
+        </div>
 
-        <h3 className="font-semibold text-lg mb-2">Owner Information:</h3>
-        <p><strong>Name:</strong> {owner.username || 'N/A'}</p>
-        <p><strong>Email:</strong> {owner.email || 'N/A'}</p>
-        <p><strong>Phone:</strong> {owner.phoneNo || 'N/A'}</p>
-        <p className="mb-4"><strong>Location:</strong> {owner.location || 'N/A'}</p>
+        <hr className="my-4" />
 
-        <label className="block mb-2">Select Rental Duration (hours):</label>
-        <input
-          type="number"
-          min="1"
-          max={tool.durationInHours}
-          value={duration}
-          onChange={(e) => setDuration(parseInt(e.target.value))}
-          className="w-full p-2 mb-4 bg-zinc-900 border border-zinc-600 rounded"
-        />
+        <div className="space-y-1 text-gray-700">
+          <h3 className="text-lg font-semibold text-primary">Owner Information:</h3>
+          <p><strong>Name:</strong> {owner.username || 'N/A'}</p>
+          <p><strong>Email:</strong> {owner.email || 'N/A'}</p>
+          <p><strong>Phone:</strong> {owner.phoneNo || 'N/A'}</p>
+          <p><strong>Location:</strong> {owner.location || 'N/A'}</p>
+        </div>
+
+        <div className="mt-4">
+          <label className="block mb-1 text-gray-600 font-medium">Select Rental Duration (hours):</label>
+          <input
+            type="number"
+            min="1"
+            max={tool.durationInHours}
+            value={duration}
+            onChange={(e) => setDuration(parseInt(e.target.value))}
+            className="w-full p-2 rounded-lg bg-gray-200 text-gray-800 border border-gray-300 focus:ring-2 focus:ring-primary outline-none"
+          />
+        </div>
 
         <button
           onClick={handleRequest}
-          className="bg-purple-700 hover:bg-purple-800 px-4 py-2 rounded w-full"
+          className="mt-4 w-full bg-primary text-white py-2 rounded-lg font-semibold hover:bg-opacity-90 transition"
         >
           Submit Request
         </button>
