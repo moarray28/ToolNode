@@ -17,7 +17,7 @@ const Navbar = () => {
 
           {/* Logo */}
           <span className="text-3xl font-bold cursor-pointer text-primary hover:tracking-widest hover:scale-125 transition-all duration-200">
-            EduTech
+            ToolNode
           </span>
 
           {/* Mobile menu button */}
