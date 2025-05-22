@@ -1,5 +1,7 @@
- import React, { useState } from 'react';
+ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 const ToolForm = () => {
   const [formData, setFormData] = useState({
@@ -10,17 +12,42 @@ const ToolForm = () => {
     ratePerHour: 1,
   });
 
+  const [owner, setOwner] = useState(null);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: name === 'durationInHours' || name === 'ratePerHour' ? parseInt(value) : value });
+    setFormData({
+      ...formData,
+      [name]: name === 'durationInHours' || name === 'ratePerHour' ? parseInt(value) : value
+    });
   };
+
+  useEffect(() => {
+    const fetchOwner = async () => {
+      const token = localStorage.getItem('authToken');
+      if (!token) return;
+
+      try {
+        const res = await axios.get(`${backendUrl}/profile`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setOwner(res.data.user);
+      } catch (err) {
+        console.error('Error fetching owner profile:', err);
+      }
+    };
+
+    fetchOwner();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem('authToken');
 
     try {
-      await axios.post('http://localhost:5000/tools', formData, {
+      await axios.post(`${backendUrl}/savetools`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -41,6 +68,18 @@ const ToolForm = () => {
 
   return (
     <form onSubmit={handleSubmit} className="bg-zinc-800 p-6 rounded-xl text-white space-y-6 shadow-lg">
+      <h2 className="text-xl font-bold">List a New Tool</h2>
+
+      {owner && (
+        <div className="bg-zinc-700 p-4 rounded-md mb-4">
+          <h3 className="font-semibold mb-2">Owner Info (auto-linked):</h3>
+          <p><strong>Name:</strong> {owner.username}</p>
+          <p><strong>Email:</strong> {owner.email}</p>
+          <p><strong>Phone:</strong> {owner.phoneNo}</p>
+          <p><strong>Location:</strong> {owner.location}</p>
+        </div>
+      )}
+
       <input
         type="text"
         name="title"

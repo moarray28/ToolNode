@@ -6,7 +6,7 @@ import Login from './pages/Login';
 import Profile from './pages/Profile';
 import Register from './pages/Register';
 import Feed from './pages/Feed';  
-  
+  import RentTool from './components/RentTool';
 import Home from './pages/Home';
 import MainLayout from './components/MainLayout';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -24,6 +24,7 @@ function App() {
   <Routes>
   < Route path="/" element={<MainLayout />}>
     <Route path="/" element={<Home/>} />
+    <Route path="/rent/:id" element={<RentTool />} />
 
 <Route path="/profile" element={
           <ProtectedRoute>
