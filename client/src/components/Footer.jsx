@@ -41,7 +41,7 @@ export default function Footer() {
                 {/* LinkedIn Icon (Unicode) */}
                 <span className="text-2xl">🔗</span>
               </a>
-              <a href="#" className="text-gray-400 hover:text-teal-400" aria-label="GitHub">
+              <a href="https://github.com/moarray28/ToolNode" target='_blank' className="text-gray-400 hover:text-teal-400" aria-label="GitHub">
                 {/* GitHub Icon (Unicode) */}
                 <span className="text-2xl">🐱</span>
               </a>
@@ -59,7 +59,7 @@ export default function Footer() {
         {/* Footer Bottom Section */}
         <div className="mt-8 border-t border-gray-700 pt-4 text-center">
           <p className="text-sm text-gray-400">
-            &copy;  {new Date().getFullYear()} EduTech. All rights reserved.
+            &copy;  {new Date().getFullYear()} ToolNode. All rights reserved.
           </p>
         </div>
       </div>

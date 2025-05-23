@@ -121,8 +121,7 @@ function authenticateToken(req, res, next) {
 }
 // POST rental request
 
-
-app.get('/transactions', authenticateToken, async (req, res) => {
+ app.get('/transactions', authenticateToken, async (req, res) => {
   const userId = req.user.userId;
 
   try {
@@ -130,7 +129,8 @@ app.get('/transactions', authenticateToken, async (req, res) => {
     const toolsGivenForRent = await Tool.find({ owner: userId });
 
     // Tools rented by this user (they appear in rentalRequests as renterId)
-    const toolsRented = await Tool.find({ 'rentalRequests.renterId': userId });
+    const toolsRented = await Tool.find({ 'rentalRequests.renterId': userId })
+      .populate('owner', '-password'); // Populate owner details, exclude password
 
     res.status(200).json({
       givenForRent: toolsGivenForRent,
@@ -196,6 +196,7 @@ app.post('/savetools', authenticateToken, async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
 
 
  app.post('/login', async (req, res) => {
@@ -310,39 +311,26 @@ app.post('/tools/:id/request', authenticateToken, async (req, res) => {
   }
 });
 
-
-// GET /tools with optional filters
-app.get('/tools', async (req, res) => {
+ app.get('/tools', async (req, res) => {
   try {
-    const { category, location } = req.query;
-
-    // Build dynamic filter object
-    const filter = {};
+    const { category, location, search } = req.query;
+    const mongoFilter = {};
 
     if (category) {
-      filter.category = { $regex: new RegExp(category, 'i') }; // case-insensitive match
+      mongoFilter.category = { $regex: new RegExp(category, 'i') };
     }
 
-    if (location) {
-      filter['owner.location'] = { $regex: new RegExp(location, 'i') }; // will filter after populate
+    if (search) {
+      mongoFilter.title = { $regex: new RegExp(search, 'i') };
     }
 
-    // First, fetch all tools and populate owner info
-    let tools = await Tool.find()
-      .populate('owner', 'username email phoneNo location') // Only pull relevant fields
+    let tools = await Tool.find(mongoFilter)
+      .populate('owner', 'username email phoneNo location')
       .exec();
 
-    // Apply location filter manually after populate (since location is in owner)
     if (location) {
       tools = tools.filter(tool =>
         tool.owner?.location?.toLowerCase().includes(location.toLowerCase())
-      );
-    }
-
-    // Apply category filter if not using Mongo regex directly
-    if (category) {
-      tools = tools.filter(tool =>
-        tool.category?.toLowerCase().includes(category.toLowerCase())
       );
     }
 
@@ -352,7 +340,6 @@ app.get('/tools', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
-
 
 
 app.listen(process.env.PORT || 5000, () => {    

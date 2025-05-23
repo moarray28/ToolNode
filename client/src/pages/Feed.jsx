@@ -4,18 +4,42 @@ import { useNavigate } from 'react-router-dom';
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
+const indianCities = [
+  'Mumbai', 'Delhi', 'Bangalore', 'Hyderabad', 'Ahmedabad',
+  'Chennai', 'Kolkata', 'Pune', 'Jaipur', 'Lucknow',
+  'Indore', 'Bhopal', 'Nagpur', 'Patna', 'Chandigarh', 'Other City'
+];
+
+const toolCategories = [
+  'Construction', 'Gardening', 'Power Tools', 'Hand Tools',
+  'Cleaning Equipment', 'Painting Tools', 'Electrical Tools',
+  'Measuring Instruments', 'Automotive Tools', 'Ladders & Scaffolding',
+  'Plumbing Tools', 'Miscellaneous'
+];
+
 const Feed = () => {
   const [tools, setTools] = useState([]);
-  const [filters, setFilters] = useState({ category: '', location: '' });
+  const [filters, setFilters] = useState({ category: '', location: '', search: '' });
+  const [debouncedFilters, setDebouncedFilters] = useState(filters);
   const navigate = useNavigate();
 
+  // Debounce logic: update debouncedFilters only after 500ms of inactivity
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedFilters(filters);
+    }, 500);
+
+    return () => clearTimeout(timer); // Clear timer if filters change quickly
+  }, [filters]);
+
+  // Fetch tools only when debounced filters change
   useEffect(() => {
     fetchTools();
-  }, [filters]);
+  }, [debouncedFilters]);
 
   const fetchTools = async () => {
     try {
-      const query = new URLSearchParams(filters).toString();
+      const query = new URLSearchParams(debouncedFilters).toString();
       const res = await axios.get(`${backendUrl}/tools?${query}`);
       setTools(res.data);
     } catch (err) {
@@ -38,27 +62,46 @@ const Feed = () => {
   };
 
   return (
-    <div className="p-6  min-h-screen rounded-xl ">
+    <div className="p-6 min-h-screen rounded-xl">
       <h2 className="text-2xl font-bold text-primary mb-6 text-center">Explore Tools</h2>
 
       {/* Filters */}
       <div className="flex flex-col md:flex-row gap-4 mb-6 justify-center">
+        {/* Search Bar */}
         <input
           type="text"
+          name="search"
+          placeholder="Search by tool name or keyword"
+          value={filters.search}
+          onChange={handleChange}
+          className="w-full md:w-64 px-4 py-2 rounded-lg bg-gray-200 text-gray-700 placeholder:text-slate-500 shadow-inner focus:ring-2 focus:ring-primary outline-none"
+        />
+
+        {/* Category Dropdown */}
+        <select
           name="category"
-          placeholder="Filter by Category"
           value={filters.category}
           onChange={handleChange}
-          className="w-full md:w-64 px-4 py-2 rounded-lg bg-gray-200 text-gray-700 placeholder:text-slate-500 shadow-inner focus:ring-2 focus:ring-primary outline-none"
-        />
-        <input
-          type="text"
+          className="w-full md:w-64 px-4 py-2 rounded-lg bg-gray-200 text-gray-700 shadow-inner focus:ring-2 focus:ring-primary outline-none"
+        >
+          <option value="">All Categories</option>
+          {toolCategories.map((category, idx) => (
+            <option key={idx} value={category}>{category}</option>
+          ))}
+        </select>
+
+        {/* Location Dropdown */}
+        <select
           name="location"
-          placeholder="Filter by Location"
           value={filters.location}
           onChange={handleChange}
-          className="w-full md:w-64 px-4 py-2 rounded-lg bg-gray-200 text-gray-700 placeholder:text-slate-500 shadow-inner focus:ring-2 focus:ring-primary outline-none"
-        />
+          className="w-full md:w-64 px-4 py-2 rounded-lg bg-gray-200 text-gray-700 shadow-inner focus:ring-2 focus:ring-primary outline-none"
+        >
+          <option value="">All Locations</option>
+          {indianCities.map((city, idx) => (
+            <option key={idx} value={city}>{city}</option>
+          ))}
+        </select>
       </div>
 
       {/* Tool Cards */}
